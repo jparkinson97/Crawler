@@ -1,5 +1,4 @@
-﻿
-namespace Crawler;
+﻿namespace Crawler;
 static class Program
 {
     public static void Main()
@@ -7,8 +6,8 @@ static class Program
         List<Page> pages = [];
         HashSet<string> visited = [];
         Queue<string> urls = new();
-        urls.Enqueue("https://news.ycombinator.com/");
-        
+        urls.Enqueue("http://www.textron.com/");
+
         while (urls.Count > 0)
         {
             var url = urls.Dequeue();
@@ -16,7 +15,9 @@ static class Program
             visited.Add(url);
             if (page != null)
             {
-                pages.Add(page); foreach (var externalLink in page.ExternalLinks)
+                pages.Add(page);
+                page.WriteJSon();
+                foreach (var externalLink in page.ExternalLinks)
                 {
                     urls.Enqueue(externalLink);
                 }
@@ -27,6 +28,11 @@ static class Program
                     //urls.Enqueue(combined.ToString());
                 }
             }
-        }        
+            if (urls.Count > 50)
+            {
+                pages.WriteCsv("pages");
+                pages = [];
+            }
+        }
     }
 }

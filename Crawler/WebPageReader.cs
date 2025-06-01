@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Crawler
 {
@@ -12,12 +11,18 @@ namespace Crawler
                 return null;
             }
             var web = new HtmlWeb();
-            var doc = web.Load(url);
-
+            HtmlDocument doc;
+            try
+            {
+                doc = web.Load(url);
+            }
+            catch (Exception ex)
+            {
+                return new Page(url, [ex.Message], []);
+            }
             List<string> internalLinks = [];
             List<string> externalLinks = [];
             List<string> emails = [];
-
 
             Queue<string> queue = new Queue<string>();
             foreach (HtmlNode link in doc.DocumentNode.SelectNodes("//a[@href]")?? new(new(new(), new(), 0)))
